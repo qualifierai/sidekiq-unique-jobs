@@ -57,15 +57,15 @@ module SidekiqUniqueJobs
     end
 
     def initialize(job_hash = {})
-      @type        = job_hash[LOCK]&.to_sym
-      @worker      = job_hash[CLASS]
-      @limit       = job_hash.fetch(LOCK_LIMIT) { 1 }
-      @timeout     = job_hash.fetch(LOCK_TIMEOUT) { 0 }
-      @ttl         = job_hash.fetch(LOCK_TTL) { job_hash.fetch(LOCK_EXPIRATION) { nil } }.to_i
-      @pttl        = ttl * 1_000
-      @lock_info   = job_hash.fetch(LOCK_INFO) { SidekiqUniqueJobs.config.lock_info }
+      @type = job_hash[LOCK]&.to_sym
+      @worker = job_hash[CLASS]
+      @limit = job_hash.fetch(LOCK_LIMIT) { 1 }
+      @timeout = job_hash.fetch(LOCK_TIMEOUT) { 0 }
+      @ttl = job_hash.fetch(LOCK_TTL) { job_hash.fetch(LOCK_EXPIRATION) { nil } }.to_i
+      @pttl = ttl * 1_000
+      @lock_info = job_hash.fetch(LOCK_INFO) { SidekiqUniqueJobs.config.lock_info }
       @on_conflict = job_hash.fetch(ON_CONFLICT) { nil }
-      @errors      = job_hash.fetch(ERRORS) { {} }
+      @errors = job_hash.fetch(ERRORS) { {} }
 
       @on_client_conflict = job_hash[ON_CLIENT_CONFLICT]
       @on_server_conflict = job_hash[ON_SERVER_CONFLICT]
@@ -107,13 +107,13 @@ module SidekiqUniqueJobs
 
     # the strategy to use as conflict resolution from sidekiq client
     def on_client_conflict
-      @on_client_conflict ||= on_conflict&.(:[], :client) if on_conflict.is_a?(Hash)
+      @on_client_conflict ||= on_conflict[:client] if on_conflict.is_a?(Hash)
       @on_client_conflict ||= on_conflict
     end
 
     # the strategy to use as conflict resolution from sidekiq server
     def on_server_conflict
-      @on_client_conflict ||= on_conflict&.(:[], :server) if on_conflict.is_a?(Hash)
+      @on_server_conflict ||= on_conflict[:server] if on_conflict.is_a?(Hash)
       @on_server_conflict ||= on_conflict
     end
   end
